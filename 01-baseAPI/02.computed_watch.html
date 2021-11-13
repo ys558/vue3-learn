@@ -1,0 +1,36 @@
+<div id="app">
+  <!-- computed 计算属性-->
+  <h1>{{ reverseTitle }}</h1>
+  <!-- watch 监听器 -->
+  <h2>{{ reverseTitle2 }}</h2>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+
+<script>
+  Vue.createApp({
+    data () {
+      return {
+        title: 'Vue3 基础',
+        reverseTitle2: '',
+      }
+    },
+    // 计算属性
+    computed: {
+      reverseTitle() {
+        // 好处：有缓存作用，如果值发生变化，会实时更新：
+        return this.title.split('').reverse().join('')
+      }
+    },
+    // 监听器：用于开销比较大的操作或异步执行等
+    watch: {
+      title: {
+        immediate: true, // 是否立刻执行
+        deep: true, // 深度监听内部嵌套的属性
+        handler(newVal, oldVal) {
+          this.reverseTitle2 = newVal.split('').reverse().join('')
+        }
+      }
+    }
+  }).mount('#app')
+</script>

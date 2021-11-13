@@ -1,0 +1,25 @@
+<div id="app">
+  <!-- v-if, v-else条件渲染 -->
+  <p v-if="fruits.length === 0">no fruits2</p>
+  <!-- v-for列表渲染 -->
+  <ul>
+    <li v-for="fruit in fruits" :key="fruit">{{fruit}}</li>
+  </ul>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data(){
+      return {
+        fruits: [],
+      }
+    },
+    created(){
+      // 模拟数据请求：
+      setTimeout(()=>{
+        this.fruits = ['apple','pear']
+      },2000)
+    }
+  }).mount('#app')
+</script>

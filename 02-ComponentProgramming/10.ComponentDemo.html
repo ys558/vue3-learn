@@ -1,0 +1,57 @@
+<!-- 将原有07的demo进行组件化改造： -->
+
+<!-- 组件化模板： -->
+<script type="text/x-template" id="fruits-list">
+  <ul>
+    <li 
+      v-for="fruit in fruits" 
+      :key="fruit" 
+      :class="{active: selectedFruit === fruit}" 
+      @click="selectedFruit = fruit"
+    >
+      {{fruit}}
+    </li>
+  </ul>
+</script>
+<script>
+  const FruitsList = {
+    template: '#fruits-list',
+    data(){
+      return {
+        selectedFruit: ''
+      }
+    },
+    props: {
+      fruits: {
+        type: Array,
+        required: true,
+      }
+    }
+  }
+</script>
+
+<div id="app">
+  <!-- 组件使用 -->
+  <fruits-list :fruits="fruits"></fruits-list>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+      }
+    },
+  })
+  .component('fruits-list', FruitsList)
+  .mount('#app')
+</script>
+
+<style>
+  .active {
+    background-color: #ccc;
+  }
+</style>

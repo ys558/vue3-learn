@@ -1,0 +1,31 @@
+<div id="app">
+  <!-- :class 类名绑定 -->
+  <h1 :class="{'active': isActive }">动态样式</h1>
+  <!-- :style 样式绑定 -->
+  <p :style="{color: activeColor, fontSize: fontSize + 'px'}">heheheheh</p>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data(){
+      return {
+        isActive: false,
+        activeColor: 'green',
+        fontSize: 20
+      }
+    },
+  }).mount('#app')
+
+  setTimeout(() => {
+    // active属性会在2秒后生成，在调试中可看到
+    app.isActive = true
+    app.fontSize = 50
+  }, 2000)
+</script>
+
+<style>
+  .active {
+    background-color: #ccc;
+  }
+</style>

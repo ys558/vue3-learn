@@ -1,0 +1,35 @@
+<div id="app">
+  <!-- 传值 静态值 -->
+  <comp title="1" ></comp>
+  <!-- 传值 动态值 -->
+  <comp2 :title="foo" :bar="[1,2,3]" :obj="{bar: '23'}" v-bind="{id:1, xx: 'xx'}"></comp2>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    // 局部注册，只能在当前组件使用：
+    components: {
+      comp2: {
+        template: '<div>comp2</div>'
+      }
+    }
+  })
+  // 全局注册，整个应用app均可使用
+  app.component('comp', {
+    // props用于定义<comp></comp>组件上的属性
+  
+    // [] 用于非精确定义的props, 全部属性均可以放在数组内
+    // props: ['title'],
+
+    // {} 用于定义精确化的props
+    props: {
+      title: {
+        type: Number,
+        required: true,
+      },
+    },
+    template: '<div>comp，{{title}}</div>',
+  })
+  app.mount('#app')
+</script>

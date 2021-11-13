@@ -1,0 +1,55 @@
+<div id="app" :title="title">{{title}}</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data(){
+      return {
+        title: 'vue3 生命周期钩子',
+        counter: 1
+      }
+    },
+    // 可以在控制台看到，以下生命周期只执行一次：
+    beforeCreate() {
+      console.log('beforeCreate')
+    },
+    created(){
+      console.log('created')
+    },
+    beforeMount(){
+      console.log('beforeMount')
+    },
+    mounted(){
+      console.log('mounted')
+      setInterval(() => {
+        this.counter ++
+        if (this.counter === 3) { app.unmount() }
+        else {
+          this.title = this.title.split('').reverse().join('')
+        }
+      }, 800);
+    },
+    // 更新时的生命周期，每次数据刷新均会更新
+    beforeUpdate(){
+      console.log('beforeUpdate')
+    },
+    updated(){
+      console.log('updated')
+    },
+    beforeUnmount(){
+      console.log('beforeUnmount')
+    },
+    unmounted(){
+      console.log('unmounted')
+    },
+
+    // 新增的生命周期
+    renderTracked({key, type, target}){
+      console.log(key, type, target) // title get {title: 'vue3 生命周期钩子', counter: 1}
+    },
+    renderTriggered({key, type, target}){
+      console.log(key, type, target) // title set {title: '子钩期周命生 3euv', counter: 2}
+    }
+  })
+  app.mount('#app')
+</script>

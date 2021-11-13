@@ -1,0 +1,37 @@
+<div id="app">
+  <ul>
+    <li 
+      v-for="fruit in fruits" 
+      :key="fruit" 
+      :class="{active: selectedFruit === fruit}" 
+      @click="selectedFruit = fruit"
+    >
+      {{fruit}}
+    </li>
+  </ul>
+  <input type="text" v-model="newFruit" @keydown.enter="addFruit">
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+      }
+    },
+    methods: {
+      addFruit () {
+        if (this.newFruit !== '') this.fruits.push(this.newFruit)
+      }
+    }
+  }).mount('#app')
+</script>
+
+<style>
+  .active {
+    background-color: #ccc;
+  }
+</style>

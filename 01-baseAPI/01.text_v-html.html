@@ -1,0 +1,22 @@
+<!-- 宿主元素 -->
+<div id="app">
+  <!-- {{}}插值、v-bind:特性绑定 -->
+  <h1 :title="title">{{title}}</h1>
+  <!-- v-html原始html内容绑定 -->
+  <p v-html="rawHtml">{{rawHtml}}</p>
+</div>
+
+<!-- 引入vue -->
+<script src="https://unpkg.com/vue@3"></script>
+
+<script>
+  // 创建一个应用程序实例
+  Vue.createApp({
+    data(){
+      return {
+        title: 'Vue3 基础',
+        rawHtml: '<span style="color:red">哈哈</span>'
+      }
+    },
+  }).mount('#app')
+</script>

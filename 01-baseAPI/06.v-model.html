@@ -1,0 +1,38 @@
+<div id="app">
+  <!-- v-model 数据绑定-->
+  <input type="text" v-model="message">
+  <p>{{message}}</p>
+
+  <!-- v-model select中的使用 -->
+  <div>
+    <select v-model="choseOne">
+      <option disabled value="">请选择</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+    </select>
+    <p>select已选择：{{choseOne}}</p>
+  </div>
+
+  <!-- v-model input中的使用 -->
+  <div>
+    <!-- input的value起到要绑定数据的作用： -->
+    <input type="checkbox" value="苹果" v-model="checkedFruits" id='apple'><label for="apple">苹果</label>
+    <input type="checkbox" value="berry" v-model="checkedFruits" id='berry'><label for="berry">莓</label>
+    <input type="checkbox" value="🍒" v-model="checkedFruits" id='cherry'><label for="cherry">樱桃</label>
+    <div>checkbox已选择：{{checkedFruits}}</div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        message: '',
+        choseOne: '',
+        checkedFruits: ['苹果'],
+      }
+    },
+  }).mount('#app')
+</script>
