@@ -1,0 +1,97 @@
+<!-- 将原有07的demo进行组件化改造： -->
+
+<!-- new-fruit-add 子组件 -->
+<script type="text/x-template" id="new-fruit-add">
+  <input type="text" v-model="newFruit" @keydown.enter="addNewFruit" />
+  <button @click="addNewFruit">新增水果</button>
+</script>
+<script>
+  const NewFruitAdd = {
+    // 1. 指定模板名字：
+    template: '#new-fruit-add',
+    data() {
+      return {
+        newFruit: ''
+      }
+    },
+    emits: ['add'],
+    methods: {
+      addNewFruit() {
+        // 2. 将子组件的数据派发出去$emits, 第一参数为函数名，第二个参数为输入的水果名：
+        this.$emit('add', this.newFruit),
+        this.course = ''
+      }
+    }
+  }
+</script>
+
+
+<!-- fruits-list 子组件 -->
+<script type="text/x-template" id="fruits-list">
+  <ul>
+    <li 
+      v-for="fruit in fruits" 
+      :key="fruit" 
+      :class="{active: selectedFruit === fruit}" 
+      @click="selectedFruit = fruit"
+    >
+      {{fruit}}
+    </li>
+  </ul>
+</script>
+<script>
+  const FruitsList = {
+    template: '#fruits-list',
+    data(){
+      return {
+        selectedFruit: ''
+      }
+    },
+    props: {
+      fruits: {
+        type: Array,
+        required: true,
+      }
+    }
+  }
+</script>
+
+<div id="app">
+  <!-- 3. 这里接收来自子组件$emit的@add方法，并自定义一方法，addNew是自定义的方法名字-->
+  <new-fruit-add @add="addNew"></new-fruit-add>
+  <fruits-list :fruits="fruits"></fruits-list>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    // 0. 声明NewFruitAdd components：
+    components: {
+      'new-fruit-add': NewFruitAdd
+    },
+    data() {
+      return {
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+      }
+    },
+    methods: {
+      // 4. 常规，将addNew方法放methods里操作：
+      addNew(fruit) {
+        if (fruit !== '') this.fruits.push(fruit)
+      }
+    }
+  })
+  .component('fruits-list', FruitsList)
+  .mount('#app')
+</script>
+
+<style>
+  li {
+    cursor: pointer;
+  }
+  .active {
+    background-color: #ccc;
+  }
+</style>

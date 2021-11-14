@@ -1,0 +1,39 @@
+<div id="app">
+  <!-- 传值 静态值 -->
+  <comp title="1" @some-evt='handleSomeEvt'></comp>
+  <!-- 传值 动态值 -->
+  <comp2 
+    :title="foo"
+    :bar="[1,2,3]" 
+    :obj="{bar: '23'}" 
+    v-bind="{id:1, xx: 'xx'}">
+  </comp2>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    components: {
+      comp2: {
+        template: '<div>comp2</div>'
+      }
+    },
+    methods: {
+      handleSomeEvt(){
+        console.log('收到comp组件发出的some-evt方法，全局获取到了')
+      }
+    }
+  })
+  app.component('comp', {
+    template: '<div @click="$emit(\'some-evt\')">comp，{{title}}</div>',
+    // 1. component 内部定义emits: ‘some-evt'
+    emits: ['some-evt'],
+    props: {
+      title: {
+        type: Number,
+        required: true,
+      },
+    },
+  })
+  app.mount('#app')
+</script>
