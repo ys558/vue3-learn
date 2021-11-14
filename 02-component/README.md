@@ -126,6 +126,8 @@ components: {
   ```
 
 ## <font color="#5FC7DF">v-model</font>
+具体范例见12.v-model.html
+
 v-model 是一个语法糖
 ```html
 <custom-input v-model="searchText"></custom-input>
@@ -135,6 +137,19 @@ v-model 是一个语法糖
   :model-value="searchText"
   @update:model-value="searchText = $event"
 ></custom-input>
+```
+
+子组件
+```js
+props: {
+  // 1. 作为属性值,用驼峰法命名, 而传递过程中, 会转换为kebab-case写法: new-fruit
+  newFruit: {
+    type: String,
+    required: true,
+  },
+  // 2. 将派发的事件写在emits属性里
+  emits: ['update:new-fruit', 'add']
+},
 ```
 
 经过这一番改造, 使得该组件变得更加通用了, 将外界传递进来的值进行监控, 可以在父组件操作子组件值

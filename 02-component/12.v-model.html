@@ -6,8 +6,8 @@
   <!-- 3. 将上面的v-model进行改写: -->
   <input 
     type="text" 
-    @input="$emit('update:new-fruit', $event.target.value)" 
-    :value="newF"
+    @input="$emit('update:newFruit', $event.target.value)" 
+    :value="newFruit"
     @keydown.enter="addNewFruit"
   />
   <button @click="addNewFruit">新增水果</button>
@@ -22,7 +22,7 @@
         required: true,
       },
       // 2. 将派发的事件写在emits属性里
-      emits: ['update:new-fruit', 'add']
+      emits: ['update:new-fruit']
     },
     emits: ['add'],
     methods: {
@@ -39,12 +39,12 @@
 <script type="text/x-template" id="fruits-list">
   <ul>
     <li 
-      v-for="fruit in fruits" 
-      :key="fruit" 
-      :class="{active: selectedFruit === fruit}" 
-      @click="selectedFruit = fruit"
+      v-for="f in fruits" 
+      :key="f" 
+      :class="{active: selectedFruit === f}" 
+      @click="selectedFruit = f"
     >
-      {{fruit}}
+      {{f}}
     </li>
   </ul>
 </script>
