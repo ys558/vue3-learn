@@ -74,6 +74,67 @@ props: {
   <blog-post v-bind:id="post.id" v-bind:title="post.title"></blog-post>
 ```
 
-## <font color="#5FC7DF">组件中的emits自定义事件，组件向外部传参</font>
+## <font color="#5FC7DF">组件中的emits自定义事件，可向外部传参</font>
+完整范例见11.emits2.html
 
+1. 在父组件声明子组件名字，如下：
+```js
+<new-fruit-add></new-fruit-add>
 
+components: {
+  'new-fruit-add': NewFruitAdd
+},
+```
+
+2. 子组件中的写法:
+```html
+<!-- new-fruit-add 子组件 -->
+<script type="text/x-template" id="new-fruit-add">
+  <input type="text" v-model="newFruit" @keydown.enter="addNewFruit" />
+  <button @click="addNewFruit">新增水果</button>
+</script>
+<script>
+  const NewFruitAdd = {
+    // 1. 指定模板名字：
+    template: '#new-fruit-add',
+    data() {
+      return {
+        newFruit: ''
+      }
+    },
+    emits: ['add'],
+    methods: {
+      addNewFruit() {
+        // 2. 将子组件的数据派发出去$emits, 第一参数为函数名，第二个参数为输入的水果名：
+        this.$emit('add', this.newFruit),
+        this.course = ''
+      }
+    }
+  }
+</script>
+```
+
+3. 父组件处理接收到的参数@add, 并命名为自己的名字addNew并在methods中操作, 即`@add="addNew"`
+  ```js
+  <new-fruit-add @add="addNew"></new-fruit-add>
+
+  methods: {
+    addNew(fruit) {
+      if (fruit !== '') this.fruits.push(fruit)
+    }
+  }
+  ```
+
+## <font color="#5FC7DF">v-model</font>
+v-model 是一个语法糖
+```html
+<custom-input v-model="searchText"></custom-input>
+
+<!--等价于--> 
+<custom-input
+  :model-value="searchText"
+  @update:model-value="searchText = $event"
+></custom-input>
+```
+
+经过这一番改造, 使得该组件变得更加通用了, 将外界传递进来的值进行监控, 可以在父组件操作子组件值

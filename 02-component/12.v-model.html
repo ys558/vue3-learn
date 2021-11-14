@@ -1,0 +1,109 @@
+<!-- 将原有07的demo进行组件化改造： -->
+
+<!-- new-fruit-add 子组件 -->
+<script type="text/x-template" id="new-fruit-add">
+  <!-- <input type="text" v-model="newFruit" @keydown.enter="addNewFruit" /> -->
+  <!-- 3. 将上面的v-model进行改写: -->
+  <input 
+    type="text" 
+    @input="$emit('update:new-fruit', $event.target.value)" 
+    :value="newF"
+    @keydown.enter="addNewFruit"
+  />
+  <button @click="addNewFruit">新增水果</button>
+</script>
+<script>
+  const NewFruitAdd = {
+    template: '#new-fruit-add',
+    props: {
+      // 1. 作为属性值,用驼峰法命名, 而传递过程中, 会转换为kebab-case写法: new-fruit
+      newFruit: {
+        type: String,
+        required: true,
+      },
+      // 2. 将派发的事件写在emits属性里
+      emits: ['update:new-fruit', 'add']
+    },
+    emits: ['add'],
+    methods: {
+      addNewFruit() {
+        this.$emit('add', this.newFruit),
+        this.course = ''
+      }
+    }
+  }
+</script>
+
+
+<!-- fruits-list 子组件 -->
+<script type="text/x-template" id="fruits-list">
+  <ul>
+    <li 
+      v-for="fruit in fruits" 
+      :key="fruit" 
+      :class="{active: selectedFruit === fruit}" 
+      @click="selectedFruit = fruit"
+    >
+      {{fruit}}
+    </li>
+  </ul>
+</script>
+<script>
+  const FruitsList = {
+    template: '#fruits-list',
+    data(){
+      return {
+        selectedFruit: ''
+      }
+    },
+    props: {
+      fruits: {
+        type: Array,
+        required: true,
+      }
+    }
+  }
+</script>
+
+<div id="app">
+  <!-- 4. 加上 v-model的绑定: -->
+  <new-fruit-add @add="addNew" v-model:new-fruit="newFruit"></new-fruit-add>
+  <fruits-list :fruits="fruits"></fruits-list>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const app = Vue.createApp({
+    components: {
+      'new-fruit-add': NewFruitAdd
+    },
+    data() {
+      return {
+        // 5. 加回newFruit:
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+      }
+    },
+    methods: {
+      // 6. 将原来传入的fruit改为用this.newFruit
+      addNew() {
+        if (this.newFruit !== '') {
+          this.fruits.push(this.newFruit)
+          this.newFruit = ''
+        }
+      }
+    }
+  })
+  .component('fruits-list', FruitsList)
+  .mount('#app')
+</script>
+
+<style>
+  li {
+    cursor: pointer;
+  }
+  .active {
+    background-color: #ccc;
+  }
+</style>
