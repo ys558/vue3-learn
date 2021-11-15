@@ -153,3 +153,82 @@ props: {
 ```
 
 经过这一番改造, 使得该组件变得更加通用了, 将外界传递进来的值进行监控, 可以在父组件操作子组件值
+
+
+## slot 插槽
+
+### 匿名插槽
+```html
+<!-- 使用 todo-button 组件时传递内容 -->
+<todo-button>
+  button label
+</todo-button>
+
+<!-- todo-button 组件模板中使用slot作为内容出口 --> 
+<button class="btn-primary">
+  <slot></slot>
+</button>
+
+<!-- 未来渲染的 HTML --> 
+<button class="btn-primary">
+  button label
+</button>
+```
+### 具名插槽
+
+如果一个页面插槽插槽有多个, 那么需要把每个插槽都命名以示区分, 这时需要用到具名插槽
+
+```html
+<!-- 展示 -->
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+
+<!-- 实际内容 -->
+<layout>
+  <!-- 这里 v-slot:header 对应上面的 name="header"-->
+  <template v-slot:header>
+    <h1>Here might be a page title</h1>
+  </template>
+  <template v-slot:default>
+    <p>A paragraph for the main content.</p>
+    <p>And another one.</p>
+  </template>
+  <template v-slot:footer>
+    <p>Here's some contact info</p>
+  </template>
+</layout>
+```
+
+### 作用域插槽
+
+有时插槽内容需要访问子组件中才有的数据，可使用作用域插槽实现。
+
+```js
+const Child = {
+  template: '<div><slot :foo="foo"></slot></div>',
+  data() {
+    return {
+      foo: 'bar'
+} }
+}
+const Parent = {
+  template: `
+    <Child>
+      <template v-slot:default="slotProps">
+        abc
+        {{slotProps.foo}}
+        efg
+      </template>
+    </Child> `,
+  components: { Child }
+}
+```
