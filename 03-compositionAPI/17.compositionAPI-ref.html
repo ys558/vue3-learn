@@ -1,0 +1,45 @@
+<div id="app">
+  <p>{{state.counter}}</p>
+  <p>{{count}}</p>
+  <comp dong="dong" tua="tua">some content</comp>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const { createApp, reactive, h, getCurrentInstance, ref } = Vue
+  const vm = createApp({
+    setup(props, ctx) {
+      const instance = getCurrentInstance()
+      const state = reactive({ counter: 0 })
+      
+      // 单值响应式 ref
+      const count = ref(0)
+      console.log(count.value)
+      count.value ++
+      console.log(count.value)
+
+      setInterval(()=> {
+        state.counter ++
+        count.value ++
+      }, 500)
+
+      return { state, count }
+    },
+    components: {
+      Comp: {
+        template: '<div><slot>comp</slot></div>',
+        props: {
+          dong: {
+            type: String,
+            default: ''
+          }
+        },
+        setup(props, {attrs, slots, emit}) {
+          console.log(attrs, slots, emit)
+        } 
+      }
+    }
+  })
+  .mount('#app')
+
+</script>

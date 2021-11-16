@@ -1,0 +1,144 @@
+<script type="text/x-template" id="message">
+  <div class="message-box">
+    <h3>
+      <slot class="title"></slot>
+      <span class="message-box-close" @click="$emit('close')">X</span>
+    </h3>
+    <slot></slot>
+  </div>
+</script>
+<script>
+  const Message = {
+    template: '#message',
+    emits: ['close']
+  }
+</script>
+<style>
+  .message-box {
+    padding: 10px 20px;
+    background: #4fc08d;
+    border: 1px solid #42b983;
+    color: #fff;
+  }
+  .message-box-close {
+    float: right;
+    cursor: pointer;
+  }
+</style>
+
+<script type="text/x-template" id="new-fruit-add">
+  <input 
+    type="text" 
+    @input="$emit('update:newFruit', $event.target.value)" 
+    :value="newFruit"
+    @keydown.enter="addNewFruit"
+  />
+  <button @click="addNewFruit">新增水果</button>
+</script>
+<script>
+  const NewFruitAdd = {
+    template: '#new-fruit-add',
+    props: {
+      newFruit: {
+        type: String,
+        required: true,
+      },
+      emits: ['update:new-fruit']
+    },
+    emits: ['add'],
+    methods: {
+      addNewFruit() {
+        this.$emit('add', this.newFruit),
+        this.course = ''
+      }
+    }
+  }
+</script>
+
+
+<script type="text/x-template" id="fruits-list">
+  <ul>
+    <li 
+      v-for="f in fruits" 
+      :key="f" 
+      :class="{active: selectedFruit === f}" 
+      @click="selectedFruit = f"
+    >
+      {{f}}
+    </li>
+  </ul>
+</script>
+<script>
+  const FruitsList = {
+    template: '#fruits-list',
+    data(){
+      return {
+        selectedFruit: ''
+      }
+    },
+    props: {
+      fruits: {
+        type: Array,
+        required: true,
+      }
+    }
+  }
+</script>
+
+<div id="app">
+  <!-- 4. showMsg 变为 ref 引用, 并暴露出来, 所以直接使用即可 -->
+  <message v-if="showMsg" @close="showMsg = false">
+    <template v-slot:title>恭喜</template>
+    <template v-slot:default>新增成功</template>
+  </message>
+  <!-- 6. 由于.refs() 的解构,所以去除所有.state -->
+  <new-fruit-add @add="addNew" v-model:new-fruit="newFruit"></new-fruit-add>
+  <fruits-list :fruits="fruits"></fruits-list>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const { reactive, ref, toRefs } = Vue
+  const app = Vue.createApp({
+    components: {
+      'new-fruit-add': NewFruitAdd
+    },
+    setup() {
+      const state = reactive({
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+        showMsg: false,
+      })
+      
+      // 1. 用ref 引用实例
+      const showMsg = ref(false)
+
+      function addNew () {
+        if (state.newFruit !== '') {
+          state.fruits.push(state.newFruit)
+          state.newFruit = ''
+          // 2. showMsg 改为 .value的用法
+          showMsg.value = true
+        }
+      }
+      // 3. 直接暴露 showMsg 即可用
+      return { 
+        // 5. toRefs() 函数, 可以直接解构state里面的所有属性,当页面使用时,无须再 state.
+        ...toRefs(state), addNew, showMsg 
+      }
+    },
+  })
+  .component('fruits-list', FruitsList)
+  .component('message', Message)
+  .mount('#app')
+</script>
+
+<style>
+  li {
+    cursor: pointer;
+  }
+  .active {
+    background-color: #ccc;
+  }
+</style>
