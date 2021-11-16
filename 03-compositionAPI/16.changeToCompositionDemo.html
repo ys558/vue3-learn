@@ -1,0 +1,137 @@
+<script type="text/x-template" id="message">
+  <div class="message-box">
+    <h3>
+      <slot class="title"></slot>
+      <span class="message-box-close" @click="$emit('close')">X</span>
+    </h3>
+    <slot></slot>
+  </div>
+</script>
+<script>
+  const Message = {
+    template: '#message',
+    emits: ['close']
+  }
+</script>
+<style>
+  .message-box {
+    padding: 10px 20px;
+    background: #4fc08d;
+    border: 1px solid #42b983;
+    color: #fff;
+  }
+  .message-box-close {
+    float: right;
+    cursor: pointer;
+  }
+</style>
+
+<script type="text/x-template" id="new-fruit-add">
+  <input 
+    type="text" 
+    @input="$emit('update:newFruit', $event.target.value)" 
+    :value="newFruit"
+    @keydown.enter="addNewFruit"
+  />
+  <button @click="addNewFruit">新增水果</button>
+</script>
+<script>
+  const NewFruitAdd = {
+    template: '#new-fruit-add',
+    props: {
+      newFruit: {
+        type: String,
+        required: true,
+      },
+      emits: ['update:new-fruit']
+    },
+    emits: ['add'],
+    methods: {
+      addNewFruit() {
+        this.$emit('add', this.newFruit),
+        this.course = ''
+      }
+    }
+  }
+</script>
+
+
+<script type="text/x-template" id="fruits-list">
+  <ul>
+    <li 
+      v-for="f in fruits" 
+      :key="f" 
+      :class="{active: selectedFruit === f}" 
+      @click="selectedFruit = f"
+    >
+      {{f}}
+    </li>
+  </ul>
+</script>
+<script>
+  const FruitsList = {
+    template: '#fruits-list',
+    data(){
+      return {
+        selectedFruit: ''
+      }
+    },
+    props: {
+      fruits: {
+        type: Array,
+        required: true,
+      }
+    }
+  }
+</script>
+
+<div id="app">
+  <!-- 3. 将原来的数据加上 state. -->
+  <message v-if="state.showMsg" @close="state.showMsg = false">
+    <template v-slot:title>恭喜</template>
+    <template v-slot:default>新增成功</template>
+  </message>
+  <new-fruit-add @add="addNew" v-model:new-fruit="state.newFruit"></new-fruit-add>
+  <fruits-list :fruits="state.fruits"></fruits-list>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const { reactive } = Vue
+  const app = Vue.createApp({
+    components: {
+      'new-fruit-add': NewFruitAdd
+    },
+    setup() {
+      // 1. 实例化reactive, 将原来data里的数据初始化:
+      const state = reactive({
+        newFruit: '',
+        fruits: ['apple', 'pear'],
+        selectedFruit: '',
+        showMsg: false,
+      })
+
+      // 2. 将原来methods里的方法集中到这里:
+      function addNew () {
+        if (state.newFruit !== '') {
+          state.fruits.push(state.newFruit)
+          state.newFruit = ''
+          state.showMsg = true
+        }
+      }
+      return { state, addNew }
+    },
+  })
+  .component('fruits-list', FruitsList)
+  .component('message', Message)
+  .mount('#app')
+</script>
+
+<style>
+  li {
+    cursor: pointer;
+  }
+  .active {
+    background-color: #ccc;
+  }
+</style>

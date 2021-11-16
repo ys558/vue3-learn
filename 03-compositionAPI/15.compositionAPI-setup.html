@@ -1,0 +1,51 @@
+<div id="app">
+  {{state.counter}}
+  <comp dong="dong" tua="tua">some content</comp>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const { createApp, reactive, h, getCurrentInstance } = Vue
+  const vm = createApp({
+    // 2. setup函数的参数可以为
+    setup(props, ctx) {
+      // 3. 获取组件实例
+      const instance = getCurrentInstance()
+      console.log("🚀 ~ file: 15.compositionAPI-setup.html ~ line 14 ~ setup ~ instance", instance)
+
+      const state = reactive({ counter: 0})
+      
+      setInterval(()=> state.counter ++ , 500)
+      return { state }
+
+      // 1. 可直接返回函数或者jsx
+      // return () => h('div', state.counter)
+    },
+    components: {
+      Comp: {
+        template: '<div><slot>comp</slot></div>',
+        props: {
+          dong: {
+            type: String,
+            default: ''
+          }
+        },
+        setup(props, {attrs, slots, emit}) {
+          // 可以发现 props不是普通参数, 是一个代理 Proxy, 
+          // 所以使用props里面的东西不能直接在括号里直接解构你要的参数, 应为: props.dong
+          // console.log(props, ctx) // Proxy {dong: 'dong'} {expose: ƒ}
+
+          /* ctx 本身是一个函数, 所以可以在括号里直接解构.
+            attrs: Proxy
+            emit: (event, ...args) => instance.emit(event, ...args)
+            expose: exposed => {…}
+            slots: Proxy
+          */
+          console.log(attrs, slots, emit)
+        } 
+      }
+    }
+  })
+  .mount('#app')
+
+</script>

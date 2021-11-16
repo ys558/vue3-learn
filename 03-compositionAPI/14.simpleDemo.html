@@ -1,0 +1,14 @@
+<div id="app">{{state.counter}}</div>
+<script src="https://unpkg.com/vue@3"></script>
+<script>
+  const { createApp, reactive } = Vue
+  const vm = createApp({
+    setup() {
+      const state = reactive({ counter: 0})
+      return { state }
+    }
+  })
+  .mount('#app')
+
+  setInterval(()=> vm.state.counter ++ , 10)
+</script>
